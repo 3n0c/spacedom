@@ -1,5 +1,6 @@
 
-
+start:
+	@docker run --name "spacedom" -d -p 2019:80 -v $(PWD):/var/www/html php:8-apache
 
 push:
 	@git config user.name "Spacedom"
