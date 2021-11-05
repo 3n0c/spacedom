@@ -6,11 +6,14 @@
 
 
 
+$data = [
+    'seconds-to-next-ascension' => 30,
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <meta charset="UTF-8">
-<title>Page Title</title>
+<title>Metal Spirals</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
     body, html {
@@ -19,6 +22,11 @@
         text-align: center;
         font-family: arial,sans-serif;
         font-size: 14px;
+    }
+    body {
+        opacity: 0;
+        transition: opacity 1s;
+        -webkit-transition: opacity 1s; /* Safari */
     }
     .inline-space {
         padding-left: 10px;
@@ -40,6 +48,7 @@
     }
     .radio-toolbar {
         margin: 10px;
+        line-height: 10px;
     }
     .radio-toolbar input[type="radio"] {
         opacity: 0;
@@ -48,27 +57,26 @@
     }
     .radio-toolbar label {
         display: inline-block;
-        background-color: #ddd;
+        background-color: #222;
         padding: 0;
-        font-size: 16px;
-        border: 2px solid #444;
-        width: 32px;
+        font-size: 12px;
+        border: none;
+        width: 28px;
     }
     .radio-toolbar label:hover {
         background-color: #dfd;
     }
     .radio-toolbar input[type="radio"]:focus + label {
-        border: 2px dashed #444;
+        border: none;
     }
     .radio-toolbar input[type="radio"]:checked + label {
         background-color: #bfb;
-        border-color: #4c4;
     }
 </style>
-<body>
-<span class="inline-space">&#9635; Research Level: <strong>0</strong></span>
-<span class="inline-space">&#9635; Health Level: <strong>0</strong></span>
-<span class="inline-space">&#9635; Military Level: <strong>0</strong></span>
+<body onload="document.body.style.opacity='1'">
+<span class="inline-space">Research: level <strong>0</strong></span>
+<span class="inline-space">Health: level <strong>0</strong></span>
+<span class="inline-space">Military: level <strong>0</strong></span>
 <hr>
 <div class="planet">
     Planet
@@ -85,7 +93,10 @@
     <tr><td colspan="2">Health</td></tr>
     <tr><td colspan="2">
 <?php for ($health = 0; $health <= 10; $health++): ?>
-    <?php for ($research = 0; $research <= $health; $research++): ?><input id="dogma-<?=$health?>-<?=$research?>" type="radio" name="dogma"
+    <?php for ($research = 0; $research <= $health; $research++):
+        $checked = $health == 4 && $research == 3;
+        ?><input id="dogma-<?=$health?>-<?=$research?>" type="radio" name="dogma"
+            <?=$checked?'checked="checked"':''?>
         ><label for="dogma-<?=$health?>-<?=$research?>">&nbsp;</label><?php endfor; ?>
     <br/>
 <?php endfor; ?>
@@ -96,7 +107,7 @@
 </table>
 </div>
 
-30 seconds to next ascension
+<span id="count-down-message"><span id="seconds-to-next-ascension"><?=$data['seconds-to-next-ascension']?></span> seconds to next ascension</span>
 
 <hr>
 
@@ -108,6 +119,28 @@ Color	HEX	RGB
 #0046ad	rgb(0, 70, 173)
 #ff5800	rgb(255, 88, 0)
 
+
+<script>
+    document.body.addEventListener('change', function (e) {
+        let target = e.target;
+        console.log("TARGET:", target);
+    });
+    let secondsToNextAscension = <?=$data['seconds-to-next-ascension']?>;
+    setInterval(function() {
+        switch (--secondsToNextAscension) {
+            case 0:
+                window.location.reload();
+                break;
+            case 1:
+                document.body.style.opacity='0';
+                document.getElementById('count-down-message').innerText = 'imminent ascension, link recovery...'
+                break;
+            default:
+                document.getElementById('seconds-to-next-ascension').innerText = new String(secondsToNextAscension);
+        }
+
+    }, 1000);
+</script>
 </body>
 </html>
 
